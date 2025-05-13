@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node --max-old-space-size=512 dist/main",
@@ -37,6 +38,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^5.0.5",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -48,8 +50,6 @@
     "@types/passport-jwt": "^4.0.0",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
