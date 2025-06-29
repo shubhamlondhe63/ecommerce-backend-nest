@@ -9,6 +9,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CartModule } from './modules/cart/cart.module';
+import { ExpensesModule } from './modules/expenses/expenses.module';
 import { AdminModule } from './admin/admin.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { AdminModule } from './admin/admin.module';
     CategoriesModule,
     OrdersModule,
     CartModule,
+    ExpensesModule,
     AdminModule,
   ],
   controllers: [AppController],
