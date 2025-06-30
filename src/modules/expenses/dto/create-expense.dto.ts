@@ -1,15 +1,14 @@
 import {
   IsString,
-  IsNumber,
   IsEnum,
-  IsDateString,
   IsOptional,
   IsArray,
+  IsNumber,
   IsBoolean,
+  IsDateString,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { ExpenseCategory, PaymentMethod } from '../schemas/expense.schema';
 
 export class CreateExpenseDto {
   @ApiProperty({
@@ -28,39 +27,80 @@ export class CreateExpenseDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 150.5, description: 'Amount of the expense' })
+  @ApiProperty({
+    example: 150.5,
+    description: 'Amount of the expense',
+    type: Number,
+  })
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
+  @Type(() => Number)
   amount: number;
 
   @ApiProperty({
-    enum: ExpenseCategory,
-    example: ExpenseCategory.FOOD,
+    enum: [
+      'food',
+      'transport',
+      'entertainment',
+      'shopping',
+      'bills',
+      'health',
+      'education',
+      'travel',
+      'other',
+    ],
+    example: 'food',
     description: 'Category of the expense',
   })
-  @IsEnum(ExpenseCategory)
-  category: ExpenseCategory;
+  @IsEnum([
+    'food',
+    'transport',
+    'entertainment',
+    'shopping',
+    'bills',
+    'health',
+    'education',
+    'travel',
+    'other',
+  ])
+  category: string;
 
   @ApiProperty({
-    enum: PaymentMethod,
-    example: PaymentMethod.CREDIT_CARD,
+    enum: [
+      'cash',
+      'credit_card',
+      'debit_card',
+      'bank_transfer',
+      'upi',
+      'wallet',
+      'other',
+    ],
+    example: 'credit_card',
     description: 'Payment method used',
   })
-  @IsEnum(PaymentMethod)
-  paymentMethod: PaymentMethod;
+  @IsEnum([
+    'cash',
+    'credit_card',
+    'debit_card',
+    'bank_transfer',
+    'upi',
+    'wallet',
+    'other',
+  ])
+  paymentMethod: string;
 
   @ApiProperty({
     example: '2024-01-15',
     description: 'Date of the expense (YYYY-MM-DD format)',
+    type: String,
   })
   @IsDateString()
-  @Transform(({ value }) => new Date(value))
-  date: Date;
+  date: string;
 
   @ApiProperty({
     example: ['grocery', 'weekly'],
     description: 'Tags for the expense',
     required: false,
+    type: [String],
   })
   @IsOptional()
   @IsArray()
@@ -71,16 +111,23 @@ export class CreateExpenseDto {
     example: false,
     description: 'Whether this is a recurring expense',
     required: false,
+    type: Boolean,
   })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value === 'true' || value === true)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value === 'true';
+    }
+    return value;
+  })
   isRecurring?: boolean;
 
   @ApiProperty({
     example: 'monthly',
     description: 'Frequency of recurring expense',
     required: false,
+    enum: ['daily', 'weekly', 'monthly', 'yearly'],
   })
   @IsOptional()
   @IsString()
@@ -99,6 +146,7 @@ export class CreateExpenseDto {
     example: ['receipt.jpg'],
     description: 'File attachments',
     required: false,
+    type: [String],
   })
   @IsOptional()
   @IsArray()

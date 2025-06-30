@@ -23,7 +23,7 @@ export class CartController {
   @Get()
   @ApiOperation({ summary: 'Get current user cart' })
   getCart(@Request() req) {
-    return this.cartService.findOrCreate(req.user.id);
+    return this.cartService.findOrCreate(req.user.userId);
   }
 
   @Post('items')
@@ -33,7 +33,7 @@ export class CartController {
     @Body('productId') productId: string,
     @Body('quantity') quantity: number,
   ) {
-    return this.cartService.addItem(req.user.id, productId, quantity);
+    return this.cartService.addItem(req.user.userId, productId, quantity);
   }
 
   @Patch('items/:productId')
@@ -43,21 +43,22 @@ export class CartController {
     @Param('productId') productId: string,
     @Body('quantity') quantity: number,
   ) {
-    return this.cartService.updateItemQuantity(req.user.id, productId, quantity);
+    return this.cartService.updateItemQuantity(
+      req.user.userId,
+      productId,
+      quantity,
+    );
   }
 
   @Delete('items/:productId')
   @ApiOperation({ summary: 'Remove item from cart' })
-  removeItem(
-    @Request() req,
-    @Param('productId') productId: string,
-  ) {
-    return this.cartService.removeItem(req.user.id, productId);
+  removeItem(@Request() req, @Param('productId') productId: string) {
+    return this.cartService.removeItem(req.user.userId, productId);
   }
 
   @Delete()
   @ApiOperation({ summary: 'Clear cart' })
   clearCart(@Request() req) {
-    return this.cartService.clearCart(req.user.id);
+    return this.cartService.clearCart(req.user.userId);
   }
-} 
+}

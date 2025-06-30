@@ -26,7 +26,7 @@ export class OrdersController {
   create(@Request() req, @Body() createOrderDto: any) {
     return this.ordersService.create({
       ...createOrderDto,
-      user: req.user.id,
+      user: req.user.userId,
     });
   }
 
@@ -40,7 +40,7 @@ export class OrdersController {
   @Get('my-orders')
   @ApiOperation({ summary: 'Get current user orders' })
   findMyOrders(@Request() req) {
-    return this.ordersService.findAll({ user: req.user.id });
+    return this.ordersService.findAll({ user: req.user.userId });
   }
 
   @Get(':id')

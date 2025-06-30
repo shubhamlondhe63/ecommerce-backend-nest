@@ -31,7 +31,7 @@ export class ExpensesController {
   @Post()
   @ApiOperation({ summary: 'Create a new expense' })
   create(@Request() req, @Body() createExpenseDto: CreateExpenseDto) {
-    return this.expensesService.create(req.user.id, createExpenseDto);
+    return this.expensesService.create(req.user.userId, createExpenseDto);
   }
 
   @Get()
@@ -57,7 +57,7 @@ export class ExpensesController {
     description: 'Filter by end date',
   })
   findAll(@Request() req, @Query() query: any) {
-    return this.expensesService.findAll(req.user.id, query);
+    return this.expensesService.findAll(req.user.userId, query);
   }
 
   @Get('stats')
@@ -79,7 +79,7 @@ export class ExpensesController {
   ) {
     const start = startDate ? new Date(startDate) : undefined;
     const end = endDate ? new Date(endDate) : undefined;
-    return this.expensesService.getExpenseStats(req.user.id, start, end);
+    return this.expensesService.getExpenseStats(req.user.userId, start, end);
   }
 
   @Get('stats/monthly/:year/:month')
@@ -90,7 +90,7 @@ export class ExpensesController {
     @Param('month') month: string,
   ) {
     return this.expensesService.getMonthlyStats(
-      req.user.id,
+      req.user.userId,
       parseInt(year),
       parseInt(month),
     );
@@ -99,13 +99,13 @@ export class ExpensesController {
   @Get('stats/yearly/:year')
   @ApiOperation({ summary: 'Get yearly expense statistics' })
   getYearlyStats(@Request() req, @Param('year') year: string) {
-    return this.expensesService.getYearlyStats(req.user.id, parseInt(year));
+    return this.expensesService.getYearlyStats(req.user.userId, parseInt(year));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific expense by ID' })
   findOne(@Request() req, @Param('id') id: string) {
-    return this.expensesService.findOne(req.user.id, id);
+    return this.expensesService.findOne(req.user.userId, id);
   }
 
   @Patch(':id')
@@ -115,12 +115,12 @@ export class ExpensesController {
     @Param('id') id: string,
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
-    return this.expensesService.update(req.user.id, id, updateExpenseDto);
+    return this.expensesService.update(req.user.userId, id, updateExpenseDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an expense' })
   remove(@Request() req, @Param('id') id: string) {
-    return this.expensesService.remove(req.user.id, id);
+    return this.expensesService.remove(req.user.userId, id);
   }
 }

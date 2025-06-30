@@ -1,28 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
-export enum ExpenseCategory {
-  FOOD = 'food',
-  TRANSPORT = 'transport',
-  ENTERTAINMENT = 'entertainment',
-  SHOPPING = 'shopping',
-  BILLS = 'bills',
-  HEALTH = 'health',
-  EDUCATION = 'education',
-  TRAVEL = 'travel',
-  OTHER = 'other',
-}
-
-export enum PaymentMethod {
-  CASH = 'cash',
-  CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card',
-  BANK_TRANSFER = 'bank_transfer',
-  UPI = 'upi',
-  WALLET = 'wallet',
-  OTHER = 'other',
-}
-
 @Schema({ timestamps: true })
 export class Expense extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
@@ -39,17 +17,35 @@ export class Expense extends Document {
 
   @Prop({
     type: String,
-    enum: Object.values(ExpenseCategory),
+    enum: [
+      'food',
+      'transport',
+      'entertainment',
+      'shopping',
+      'bills',
+      'health',
+      'education',
+      'travel',
+      'other',
+    ],
     required: true,
   })
-  category: ExpenseCategory;
+  category: string;
 
   @Prop({
     type: String,
-    enum: Object.values(PaymentMethod),
+    enum: [
+      'cash',
+      'credit_card',
+      'debit_card',
+      'bank_transfer',
+      'upi',
+      'wallet',
+      'other',
+    ],
     required: true,
   })
-  paymentMethod: PaymentMethod;
+  paymentMethod: string;
 
   @Prop({ type: Date, required: true })
   date: Date;

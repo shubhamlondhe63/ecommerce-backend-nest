@@ -17,13 +17,34 @@ export class ExpensesService {
   ): Promise<Expense> {
     const expense = new this.expenseModel({
       ...createExpenseDto,
+      date: new Date(createExpenseDto.date),
       user: userId,
     });
     return expense.save();
   }
 
   async findAll(userId: string, query: any = {}): Promise<Expense[]> {
-    const filter = { user: userId, ...query };
+    const filter: any = { user: userId };
+
+    // Handle date filtering
+    if (query.startDate || query.endDate) {
+      filter.date = {};
+      if (query.startDate) {
+        filter.date.$gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        filter.date.$lte = new Date(query.endDate);
+      }
+    }
+
+    // Handle other filters
+    if (query.category) {
+      filter.category = query.category;
+    }
+    if (query.paymentMethod) {
+      filter.paymentMethod = query.paymentMethod;
+    }
+
     return this.expenseModel.find(filter).sort({ date: -1 }).exec();
   }
 
@@ -42,8 +63,13 @@ export class ExpensesService {
     id: string,
     updateExpenseDto: UpdateExpenseDto,
   ): Promise<Expense> {
+    const updateData: any = { ...updateExpenseDto };
+    if (updateData.date) {
+      updateData.date = new Date(updateData.date);
+    }
+
     const expense = await this.expenseModel
-      .findOneAndUpdate({ _id: id, user: userId }, updateExpenseDto, {
+      .findOneAndUpdate({ _id: id, user: userId }, updateData, {
         new: true,
       })
       .exec();
