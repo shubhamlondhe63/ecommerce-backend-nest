@@ -2,11 +2,12 @@ import {
   IsString,
   IsNumber,
   IsEnum,
-  IsDate,
+  IsDateString,
   IsOptional,
   IsArray,
   IsBoolean,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ExpenseCategory, PaymentMethod } from '../schemas/expense.schema';
 
@@ -29,6 +30,7 @@ export class CreateExpenseDto {
 
   @ApiProperty({ example: 150.5, description: 'Amount of the expense' })
   @IsNumber()
+  @Transform(({ value }) => parseFloat(value))
   amount: number;
 
   @ApiProperty({
@@ -47,8 +49,12 @@ export class CreateExpenseDto {
   @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;
 
-  @ApiProperty({ example: '2024-01-15', description: 'Date of the expense' })
-  @IsDate()
+  @ApiProperty({
+    example: '2024-01-15',
+    description: 'Date of the expense (YYYY-MM-DD format)',
+  })
+  @IsDateString()
+  @Transform(({ value }) => new Date(value))
   date: Date;
 
   @ApiProperty({
@@ -68,6 +74,7 @@ export class CreateExpenseDto {
   })
   @IsOptional()
   @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
   isRecurring?: boolean;
 
   @ApiProperty({
